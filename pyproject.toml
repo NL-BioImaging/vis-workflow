@@ -14,11 +14,15 @@ requires-python = ">=3.11"
 dependencies = [
     # Bilayers parsing needs NL-BioImaging/biomero-schema PR #8 until it is released
     "biomero-schema @ git+https://github.com/NL-BioImaging/biomero-schema@feature/bilayers-adapter",
+    "click>=8.0",
     "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
 test = ["pytest>=8.0"]
+
+[project.scripts]
+vis-workflow = "vis_workflow.cli:cli"
 
 [tool.setuptools.packages.find]
 where = ["src"]

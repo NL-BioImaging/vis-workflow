@@ -26,6 +26,15 @@ pip install -e .[test]
 ```
 
 ## Usage
+```bash
+# SOURCE: a descriptor file, a directory/repository with descriptor.json, descriptor.yaml or config.yaml, or a URL
+vis-workflow mermaid https://github.com/Cellular-Imaging-Amsterdam-UMC/cideconvolve
+vis-workflow mermaid config.yaml --params all -o diagram.md   # .md gets a mermaid code block
+vis-workflow convert config.yaml -o descriptor.json           # biomero-schema JSON
+vis-workflow view config.yaml                                 # open in the web portal
+```
+
+From Python:
 ```python
 from vis_workflow import load_descriptor, to_mermaid
 

@@ -19,9 +19,9 @@ To check rendering (no Node install needed; uses installed Edge instead of downl
 `PUPPETEER_SKIP_DOWNLOAD=true pixi exec --spec nodejs -- npx.cmd -y @mermaid-js/mermaid-cli@11 -p puppeteer.json -i x.mmd -o x.png`
 with `puppeteer.json`: `{"executablePath": "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"}`.
 
-### 2. CLI
-- `vis-workflow mermaid`, `convert`, `view` (local CORS server + open portal).
-- URL rewriting (GitHub blob/tree -> raw, descriptor auto-discovery), tested on fixed strings.
+### 2. CLI - done
+`vis-workflow mermaid|convert|view`, GitHub URL resolution with descriptor discovery; 35 tests in 0.25s.
+`view` on a local file is untested end to end until the portal exists (phase 3); its server is tested.
 
 ### 3. Web portal
 - Static page with `?source=`, Pyodide loading the package wheel, mermaid.js render, option toggles,

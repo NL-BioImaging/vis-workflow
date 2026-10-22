@@ -67,9 +67,16 @@ flowchart LR
   (citations, container, flags), parse warnings/errors.
 
 ## Python CLI
-- `vis-workflow mermaid <file|url> [-o out.md] [--params collapsed|beginner|grouped|all]`
-- `vis-workflow view <file|url>`: serve the file with CORS on localhost, open the portal with `?source=`.
-- `vis-workflow convert <file|url>`: normalised biomero-schema JSON (also `biomero-schema parse --json`).
+Reuses click and the standard library (urllib, http.server, webbrowser); no other dependencies.
+- SOURCE: a file, a directory (descriptor discovery), or a URL. `sources.candidate_urls()` maps GitHub
+  blob/tree/repository URLs to raw URLs (a repository uses `HEAD`); other URLs are fetched as given. It does no I/O,
+  so the portal can reuse it.
+- `vis-workflow mermaid SOURCE [--params MODE] [-o out.md]`: a `.md` output gets a mermaid code block.
+- `vis-workflow convert SOURCE [-o out.json]`: biomero-schema JSON (`biomero-schema parse --json` does the same
+  for local files).
+- `vis-workflow view SOURCE`: a URL opens the portal directly; a local file is served on 127.0.0.1 and the portal
+  opened on it. The server serves only that file (CORS `*` would otherwise let any site read its directory), with
+  `Access-Control-Allow-Private-Network` for Chrome's Private Network Access.
 
 ## Layout
 ```
