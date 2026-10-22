@@ -58,7 +58,7 @@ descriptor = load_descriptor(open("config.yaml", encoding="utf-8").read())
 print(to_mermaid(descriptor, params="all"))
 ```
 
-Parameter modes: `all` (default; advanced parameters in their own box), `beginner` (advanced ones summarised in
-one node), `grouped` (by Bilayers section), `collapsed` (one summary node), `none`.
+Parameter modes: `all` (default; Basic and Advanced boxes, each split by Bilayers section), `beginner` (advanced
+ones summarised in one node), `grouped` (by Bilayers section only), `collapsed` (one summary node), `none`.
 
 Design and plans: [notes/design.md](notes/design.md), [notes/todo_known_issues.md](notes/todo_known_issues.md).

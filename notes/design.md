@@ -51,9 +51,12 @@ flowchart LR
 - Every node: bold title (`<b>`), then one detail per line - combined one-line details were hard to read.
   Data nodes: `type`, `formats` (truncated), `files`, `flag`. Tool: `container` (+tag from raw descriptor),
   `command`. Parameters: label, value on the next line.
-- Parameters are many (cideconvolve: 41), so modes: `all` (default; when some are `mode: advanced`, a "Basic" and
-  an "Advanced" box), `beginner` (advanced ones summarised as one "+N advanced parameters" node), `grouped` (one box
-  per `section_id`, from raw), `collapsed` (one "N parameters" node), `none`.
+- Parameters are many (cideconvolve: 41), so modes: `all` (default; "Basic" and "Advanced" boxes, each split by
+  `section_id`), `beginner` (advanced ones summarised as one "+N advanced parameters" node), `grouped` (by
+  `section_id` only), `collapsed` (one "N parameters" node), `none`. `section_id` is not in `WorkflowSchema`; it
+  comes from the raw descriptor (Bilayers only).
+- Box nesting rule: a level with a single group merges into its parent, so no box holds just one box. cideconvolve:
+  Basic › {essential, method}, Advanced (its one section merged); all-basic WB_Measurements: just its sections.
 - Parameter layout: a subgraph linked as a whole (`parameters -.-> tool`) is laid out on its own, top-down, which
   puts unlinked nodes in one wide row. So parameters sit in a grid: `direction LR` with rows chained by invisible
   links (`~~~`), one column up to 7 parameters, at most 4 columns.

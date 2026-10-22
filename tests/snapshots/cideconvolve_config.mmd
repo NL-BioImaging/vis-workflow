@@ -6,32 +6,38 @@ flowchart LR
   subgraph parameters["Parameters"]
     direction TB
     subgraph group_Basic["Basic"]
-      direction LR
-      param_method["<b>Deconvolution Method</b><br/>ci_rl"]
-      param_iterations["<b>RL Iterations</b><br/>60"]
-      param_convergence["<b>Convergence Mode</b><br/>auto"]
-      param_rel_threshold["<b>Convergence Threshold</b><br/>0.005"]
-      param_start["<b>Initial Estimate</b><br/>auto"]
-      param_microscope_type["<b>Microscope Type</b><br/>confocal"]
-      param_na["<b>Numerical Aperture</b><br/>1.4"]
-      param_pinhole_airy["<b>Confocal Pinhole (AU)</b><br/>1"]
-      param_refractive_index["<b>Immersion Medium</b><br/>oil (1.515)"]
-      param_sample_ri["<b>Sample / Mounting Medium</b><br/>prolong gold (1.47)"]
-      param_excitation_wl["<b>Excitation Wavelengths (nm)</b><br/>488"]
-      param_emission_wl["<b>Emission Wavelengths (nm)</b><br/>520"]
-      param_pixel_size_xy["<b>Pixel Size XY (nm)</b><br/>65.0"]
-      param_pixel_size_z["<b>Pixel Size Z (nm)</b><br/>200.0"]
-      param_overrule_image_metadata["<b>Overrule Image Metadata</b><br/>false"]
-      param_projection["<b>Z Projection</b><br/>none"]
-      param_snr_mode["<b>SNR Mode</b><br/>none"]
-      param_snr_value["<b>SNR Value</b><br/>4.0"]
-      param_acuity["<b>Acuity</b><br/>0.0"]
-      param_method ~~~ param_iterations ~~~ param_convergence
-      param_rel_threshold ~~~ param_start ~~~ param_microscope_type
-      param_na ~~~ param_pinhole_airy ~~~ param_refractive_index
-      param_sample_ri ~~~ param_excitation_wl ~~~ param_emission_wl
-      param_pixel_size_xy ~~~ param_pixel_size_z ~~~ param_overrule_image_metadata
-      param_projection ~~~ param_snr_mode ~~~ param_snr_value
+      direction TB
+      subgraph group_essential["essential"]
+        direction LR
+        param_method["<b>Deconvolution Method</b><br/>ci_rl"]
+        param_iterations["<b>RL Iterations</b><br/>60"]
+        param_convergence["<b>Convergence Mode</b><br/>auto"]
+        param_rel_threshold["<b>Convergence Threshold</b><br/>0.005"]
+        param_start["<b>Initial Estimate</b><br/>auto"]
+        param_microscope_type["<b>Microscope Type</b><br/>confocal"]
+        param_na["<b>Numerical Aperture</b><br/>1.4"]
+        param_pinhole_airy["<b>Confocal Pinhole (AU)</b><br/>1"]
+        param_refractive_index["<b>Immersion Medium</b><br/>oil (1.515)"]
+        param_sample_ri["<b>Sample / Mounting Medium</b><br/>prolong gold (1.47)"]
+        param_excitation_wl["<b>Excitation Wavelengths (nm)</b><br/>488"]
+        param_emission_wl["<b>Emission Wavelengths (nm)</b><br/>520"]
+        param_pixel_size_xy["<b>Pixel Size XY (nm)</b><br/>65.0"]
+        param_pixel_size_z["<b>Pixel Size Z (nm)</b><br/>200.0"]
+        param_overrule_image_metadata["<b>Overrule Image Metadata</b><br/>false"]
+        param_projection["<b>Z Projection</b><br/>none"]
+        param_method ~~~ param_iterations ~~~ param_convergence
+        param_rel_threshold ~~~ param_start ~~~ param_microscope_type
+        param_na ~~~ param_pinhole_airy ~~~ param_refractive_index
+        param_sample_ri ~~~ param_excitation_wl ~~~ param_emission_wl
+        param_pixel_size_xy ~~~ param_pixel_size_z ~~~ param_overrule_image_metadata
+      end
+      subgraph group_method["method"]
+        direction LR
+        param_snr_mode["<b>SNR Mode</b><br/>none"]
+        param_snr_value["<b>SNR Value</b><br/>4.0"]
+        param_acuity["<b>Acuity</b><br/>0.0"]
+      end
+      group_essential ~~~ group_method
     end
     subgraph group_Advanced["Advanced"]
       direction LR

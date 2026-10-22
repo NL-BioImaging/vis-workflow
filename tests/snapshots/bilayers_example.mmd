@@ -7,17 +7,37 @@ flowchart LR
   subgraph parameters["Parameters"]
     direction TB
     subgraph group_Basic["Basic"]
-      direction LR
-      param_pretrained_model["<b>PreTrained Model</b><br/>cyto"]
-      param_diameter["<b>Diameter</b><br/>30"]
-      param_save_omezarr["<b>Save Ome-zarr</b><br/>false"]
+      direction TB
+      subgraph group_model_args["model-args"]
+        direction LR
+        param_pretrained_model["<b>PreTrained Model</b><br/>cyto"]
+      end
+      subgraph group_algorithm_args["algorithm-args"]
+        direction LR
+        param_diameter["<b>Diameter</b><br/>30"]
+      end
+      subgraph group_output_args["output-args"]
+        direction LR
+        param_save_omezarr["<b>Save Ome-zarr</b><br/>false"]
+      end
+      group_model_args ~~~ group_algorithm_args ~~~ group_output_args
     end
     subgraph group_Advanced["Advanced"]
-      direction LR
-      param_channel_axis["<b>Channel Axis</b><br/>0"]
-      param_stitch_threshold["<b>Stitch Threshold</b><br/>0.0"]
-      param_min_size["<b>Min Size</b><br/>15"]
-      param_save_dir["<b>Save Directory</b><br/>/output_images"]
+      direction TB
+      subgraph group_input_args["input-args"]
+        direction LR
+        param_channel_axis["<b>Channel Axis</b><br/>0"]
+      end
+      subgraph group_algorithm_args_2["algorithm-args"]
+        direction LR
+        param_stitch_threshold["<b>Stitch Threshold</b><br/>0.0"]
+        param_min_size["<b>Min Size</b><br/>15"]
+      end
+      subgraph group_output_args_2["output-args"]
+        direction LR
+        param_save_dir["<b>Save Directory</b><br/>/output_images"]
+      end
+      group_input_args ~~~ group_algorithm_args_2 ~~~ group_output_args_2
     end
     group_Basic ~~~ group_Advanced
   end

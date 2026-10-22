@@ -51,34 +51,49 @@ def _parameter_lines(descriptor: Descriptor, mode: str, node_ids: "_NodeIds") ->
         return []
     if mode == "collapsed":
         return [f'    {node_ids.make("param", "summary")}["{_plural(len(params), "parameter")}"]']
+    def section(param):
+        return descriptor.sections.get(param.id, "other")
+
+    def basic_or_advanced(param):
+        return "Advanced" if param.mode == "advanced" else "Basic"
+
     if mode == "grouped":
-        sections = {}
-        for param in params:
-            sections.setdefault(descriptor.sections.get(param.id, "other"), []).append(param)
-        return _group_lines(sections, node_ids)
-    basic = [param for param in params if param.mode != "advanced"]
-    advanced = [param for param in params if param.mode == "advanced"]
+        return _tree_lines(_nest(params, [section]), node_ids)
     if mode == "beginner":
+        basic = [param for param in params if param.mode != "advanced"]
         nodes = _param_nodes(basic, node_ids)
-        if advanced:
-            nodes.append((node_ids.make("param", "advanced"), f"+{_plural(len(advanced), 'advanced parameter')}"))
-        return ["    direction LR", *_param_grid(nodes)]
-    if basic and advanced:
-        return _group_lines({"Basic": basic, "Advanced": advanced}, node_ids)
-    return ["    direction LR", *_param_grid(_param_nodes(params, node_ids))]
+        if len(basic) < len(params):
+            hidden = len(params) - len(basic)
+            nodes.append((node_ids.make("param", "advanced"), f"+{_plural(hidden, 'advanced parameter')}"))
+        return _param_grid(nodes)
+    # Stable sort: Basic before Advanced, descriptor order within each
+    ordered = sorted(params, key=lambda param: param.mode == "advanced")
+    return _tree_lines(_nest(ordered, [basic_or_advanced, section]), node_ids)
 
 
-def _group_lines(groups: dict[str, list], node_ids: "_NodeIds") -> list[str]:
+def _nest(params, keys):
+    """Parameters grouped by each key in turn; a level with a single group merges into its parent."""
+    if not keys:
+        return params
+    groups = {}
+    for param in params:
+        groups.setdefault(keys[0](param), []).append(param)
+    if len(groups) == 1:
+        return _nest(params, keys[1:])
+    return {name: _nest(group_params, keys[1:]) for name, group_params in groups.items()}
+
+
+def _tree_lines(tree, node_ids: "_NodeIds", indent: str = "    ") -> list[str]:
+    if isinstance(tree, list):
+        return _param_grid(_param_nodes(tree, node_ids), indent)
     # Unlinked boxes are placed in no fixed order: chain them top-down with invisible links
-    lines = ["    direction TB"]
+    lines = [f"{indent}direction TB"]
     group_ids = []
-    for name, group_params in groups.items():
+    for name, subtree in tree.items():
         group_id = node_ids.make("group", name)
         group_ids.append(group_id)
-        grid = [f"  {line}" for line in _param_grid(_param_nodes(group_params, node_ids))]
-        lines.extend(_subgraph(group_id, name, ["      direction LR", *grid], "    "))
-    if len(group_ids) > 1:
-        lines.append("    " + " ~~~ ".join(group_ids))
+        lines.extend(_subgraph(group_id, name, _tree_lines(subtree, node_ids, indent + "  "), indent))
+    lines.append(indent + " ~~~ ".join(group_ids))
     return lines
 
 
@@ -86,14 +101,15 @@ def _param_nodes(params, node_ids: "_NodeIds") -> list[tuple[str, str]]:
     return [(node_ids.make("param", param.id), _param_label(param)) for param in params]
 
 
-def _param_grid(nodes: list[tuple[str, str]]) -> list[str]:
+def _param_grid(nodes: list[tuple[str, str]], indent: str = "    ") -> list[str]:
     """Node lines plus invisible links chaining each row, so many parameters form a grid."""
+    # A subgraph linked as a whole is laid out on its own, top-down: LR stacks unlinked nodes instead
     columns = min(GRID_MAX_COLUMNS, math.ceil(len(nodes) / GRID_ROWS))
-    lines = [f'    {node_id}["{label}"]' for node_id, label in nodes]
+    lines = [f"{indent}direction LR", *(f'{indent}{node_id}["{label}"]' for node_id, label in nodes)]
     for start in range(0, len(nodes), columns):
         row = [node_id for node_id, _ in nodes[start:start + columns]]
         if len(row) > 1:
-            lines.append("    " + " ~~~ ".join(row))
+            lines.append(indent + " ~~~ ".join(row))
     return lines
 
 

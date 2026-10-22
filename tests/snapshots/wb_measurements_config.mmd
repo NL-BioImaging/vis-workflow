@@ -4,11 +4,18 @@ flowchart LR
   end
   tool[["<b>Measurements-CellProfiler</b><br/>container: cellularimagingcf/wb_measurements-cellprofiler:v2.0.0<br/>command: python /app/cellprofiler_run.py"]]
   subgraph parameters["Parameters"]
-    direction LR
-    param_nuclei_mask_suffix["<b>Suffix for Nuclei Mask</b><br/>_Nuclei_Mask"]
-    param_cells_mask_suffix["<b>Suffix for Cells Mask</b><br/>_Cells_Mask"]
-    param_aggregates_mask_suffix["<b>Suffix for Aggregates Mask</b><br/>_Aggregates_Mask"]
-    param_metric_channels["<b>Channels to measure</b><br/>1,2,3"]
+    direction TB
+    subgraph group_masks["masks"]
+      direction LR
+      param_nuclei_mask_suffix["<b>Suffix for Nuclei Mask</b><br/>_Nuclei_Mask"]
+      param_cells_mask_suffix["<b>Suffix for Cells Mask</b><br/>_Cells_Mask"]
+      param_aggregates_mask_suffix["<b>Suffix for Aggregates Mask</b><br/>_Aggregates_Mask"]
+    end
+    subgraph group_measurements["measurements"]
+      direction LR
+      param_metric_channels["<b>Channels to measure</b><br/>1,2,3"]
+    end
+    group_masks ~~~ group_measurements
   end
   subgraph outputs["Outputs"]
     out_outfolder[/"<b>Measurement tables</b><br/>type: measurement<br/>formats: csv<br/>files: multiple<br/>flag: --outfolder"/]
