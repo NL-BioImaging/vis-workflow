@@ -12,6 +12,7 @@ FIXTURES = Path(__file__).parent / "fixtures"
 SNAPSHOTS = Path(__file__).parent / "snapshots"
 FIXTURE_NAMES = [
     "cideconvolve_config.yaml",
+    "wb_measurements_config.yaml",
     "bilayers_example.yaml",
     "W_NucleiSegmentation-ImageJ.descriptor.json",
     "example_workflow.json",

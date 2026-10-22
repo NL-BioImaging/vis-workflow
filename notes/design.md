@@ -61,10 +61,20 @@ flowchart LR
 - `?source=<url>`: GitHub `blob/` and `tree/` URLs rewritten to `raw.githubusercontent.com`; a repo/tree URL
   auto-discovers `descriptor.json` -> `descriptor.yaml` -> `config.yaml` (BIOMERO's order). Fetched in JS; clear
   message when a host blocks CORS.
-- Python via **Pyodide** (pydantic and pyyaml available) runs the same package: `parse_descriptor` + `to_mermaid`;
-  mermaid.js renders. Trade-off: a few seconds of first load, for one shared code path.
-- Page: URL box + example links, diagram with option toggles, SVG/PNG download, copy Mermaid source, details panel
-  (citations, container, flags), parse warnings/errors.
+- Python via **Pyodide** runs the same package: `candidate_urls`, `load_descriptor`, `to_mermaid`; JS only
+  fetches and renders. Pyodide provides pydantic and pyyaml; `web/build.py` builds wheels of vis-workflow and
+  biomero-schema (requirement taken from pyproject), installed with micropip `deps=False`. Trade-off: a few seconds
+  of first load, for one shared code path.
+- Pinned: Pyodide 314.0.7 (Python 3.14, so CI also tests 3.14), mermaid 11.17.2 (same major as the mermaid-cli used
+  to check rendering).
+- Mermaid `securityLevel: "strict"`: descriptor text comes from arbitrary URLs.
+- Page: URL box + example links, parameter mode, copy Mermaid, download SVG, details panel (name, description,
+  format, container, command, citations with DOI links, descriptor URL), errors with a CORS hint. `?source=` and
+  `?params=` kept in the address for sharing. Light/dark from the system.
+- Diagram rendered at natural size; "Fit to width" (default on) scales it with CSS for the overview, off shows
+  readable labels with horizontal scroll. Scaling alone made large workflows unreadable; natural size alone hid
+  the tool and outputs off-screen.
+- Deployed by `.github/workflows/pages.yml` (Pages source must be "GitHub Actions" in the repository settings).
 
 ## Python CLI
 Reuses click and the standard library (urllib, http.server, webbrowser); no other dependencies.

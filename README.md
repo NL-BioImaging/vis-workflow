@@ -20,6 +20,18 @@ flowchart LR
   tool --> out_output_dir
 ```
 
+## Web portal
+Open a descriptor URL at `https://nl-bioimaging.github.io/vis-workflow/?source=<url>` - a file, or a GitHub
+repository or folder. It runs entirely in the browser (Pyodide + Mermaid); `vis-workflow view <file>` shows a local
+file in it.
+
+Preview locally:
+```bash
+python web/build.py                       # wheels for Pyodide into web/wheels/
+python -m http.server -d web 8001         # then open http://127.0.0.1:8001/?source=<url>
+vis-workflow view config.yaml --portal http://127.0.0.1:8001/
+```
+
 ## Install
 ```bash
 pip install -e .[test]

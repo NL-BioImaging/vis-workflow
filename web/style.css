@@ -1,0 +1,83 @@
+:root {
+  --bg: #ffffff;
+  --surface: #f5f6f8;
+  --text: #1f2328;
+  --muted: #59636e;
+  --border: #d1d9e0;
+  --accent: #0969da;
+  --error: #cf222e;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --text: #e6edf3;
+    --muted: #9198a1;
+    --border: #3d444d;
+    --accent: #4493f8;
+    --error: #f85149;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 24px 16px;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+a { color: var(--accent); }
+h1 { margin: 0 0 4px; font-size: 1.6rem; }
+header p, .examples, footer { color: var(--muted); }
+
+label { display: block; margin-bottom: 4px; font-weight: 600; }
+.row, .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.toolbar label { margin: 0; }
+
+input, select, button {
+  font: inherit;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+input { flex: 1 1 300px; min-width: 0; }
+button { cursor: pointer; }
+button[type="submit"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+button:disabled { opacity: 0.6; cursor: default; }
+
+.examples a { margin-right: 12px; }
+#status { min-height: 1.5em; }
+#status.error { color: var(--error); white-space: pre-wrap; }
+
+#diagram {
+  margin: 12px 0;
+  padding: 12px;
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+#diagram svg { display: block; margin: 0 auto; }
+#diagram.fit svg { max-width: 100%; height: auto; }
+.toolbar .check { display: flex; gap: 4px; align-items: center; font-weight: normal; }
+.check input { flex: none; }
+
+#details { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; }
+#details dt { font-weight: 600; }
+#details dd { margin: 0; overflow-wrap: anywhere; }
+
+footer { margin-top: 32px; font-size: 0.9em; }
+
+@media (max-width: 600px) {
+  #details { grid-template-columns: 1fr; }
+  #details dd { margin-bottom: 8px; }
+}

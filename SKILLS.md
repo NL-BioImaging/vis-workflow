@@ -20,7 +20,7 @@ Follow these when making changes here. Design: [notes/design.md](notes/design.md
 
 ## Testing
 - Keep tests as small and fast as possible: the fewest cases that cover each path, no overlapping tests, no repeated loading of large fixtures where a small one does.
-- Fixtures in `tests/fixtures/`: cideconvolve `config.yaml` (Bilayers, large), biomero-schema's `bilayers_example.yaml`, `W_NucleiSegmentation-ImageJ.descriptor.json` (BIAFLOWS) and `example_workflow.json` (native).
+- Fixtures in `tests/fixtures/`: cideconvolve `config.yaml` (Bilayers, large), WB_Measurements-CellProfiler `config.yaml` (Bilayers, small, measurement output), biomero-schema's `bilayers_example.yaml`, `W_NucleiSegmentation-ImageJ.descriptor.json` (BIAFLOWS) and `example_workflow.json` (native).
 - Test Mermaid output structurally (nodes, edges, labels present), plus one snapshot per fixture - not by eye.
 - Tests never hit the network; URL handling is tested on the rewrite logic with fixed strings.
 - Before adding a test, check for an existing one covering the same path - extend or parametrize it rather than adding a near-duplicate.

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Workflow Viewer</title>
+  <meta name="description" content="View Bilayers, BIAFLOWS and biomero-schema workflow descriptors as diagrams">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1' y='11' width='9' height='10' rx='2' fill='%230969da'/%3E%3Crect x='22' y='11' width='9' height='10' rx='2' fill='%230969da'/%3E%3Cpath d='M10 16h12' stroke='%230969da' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Workflow Viewer</h1>
+    <p>Shows a workflow descriptor (<a href="https://bilayers.org/understanding-config/">Bilayers</a> config.yaml,
+      BIAFLOWS descriptor.json or <a href="https://github.com/NL-BioImaging/biomero-schema">biomero-schema</a>)
+      as a diagram of its inputs, parameters and outputs.</p>
+  </header>
+
+  <main>
+    <form id="source-form">
+      <label for="source">Descriptor URL - a file, or a GitHub repository or folder</label>
+      <div class="row">
+        <input id="source" name="source" type="url" required
+               placeholder="https://github.com/org/repo/blob/main/config.yaml">
+        <button type="submit">Show</button>
+      </div>
+    </form>
+    <p class="examples">Examples: <span id="examples"></span></p>
+
+    <p id="status" role="status"></p>
+
+    <section id="result" hidden>
+      <div class="toolbar">
+        <label for="params">Parameters</label>
+        <select id="params">
+          <option value="beginner">Beginner (advanced summarised)</option>
+          <option value="all">All</option>
+          <option value="grouped">Grouped by section</option>
+          <option value="collapsed">Collapsed</option>
+          <option value="none">None</option>
+        </select>
+        <label class="check"><input type="checkbox" id="fit" checked> Fit to width</label>
+        <button type="button" id="copy">Copy Mermaid</button>
+        <button type="button" id="download">Download SVG</button>
+      </div>
+      <div id="diagram" class="fit"></div>
+      <dl id="details"></dl>
+    </section>
+  </main>
+
+  <footer>
+    <a href="https://github.com/NL-BioImaging/vis-workflow">vis-workflow</a> · runs in your browser with
+    <a href="https://pyodide.org">Pyodide</a> and <a href="https://mermaid.js.org">Mermaid</a>
+  </footer>
+</body>
+</html>

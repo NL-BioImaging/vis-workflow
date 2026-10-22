@@ -219,3 +219,6 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 /.idea
+
+# Web portal build output
+/web/wheels/

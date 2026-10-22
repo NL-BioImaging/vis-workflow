@@ -1,0 +1,18 @@
+flowchart LR
+  subgraph inputs["Inputs"]
+    in_infolder[/"Images and masks<br/>image · ometiff, omezarr · multiple<br/>--infolder"/]
+  end
+  tool[["Measurements-CellProfiler<br/>cellularimagingcf/wb_measurements-cellprofiler:v2.0.0<br/>python /app/cellprofiler_run.py"]]
+  subgraph parameters["Parameters"]
+    direction LR
+    param_nuclei_mask_suffix["Suffix for Nuclei Mask = _Nuclei_Mask"]
+    param_cells_mask_suffix["Suffix for Cells Mask = _Cells_Mask"]
+    param_aggregates_mask_suffix["Suffix for Aggregates Mask = _Aggregates_Mask"]
+    param_metric_channels["Channels to measure = 1,2,3"]
+  end
+  subgraph outputs["Outputs"]
+    out_outfolder[/"Measurement tables<br/>measurement · csv · multiple<br/>--outfolder"/]
+  end
+  in_infolder --> tool
+  parameters -.-> tool
+  tool --> out_outfolder

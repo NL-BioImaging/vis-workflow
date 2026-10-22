@@ -6,6 +6,7 @@ from vis_workflow import load_descriptor
 
 @pytest.mark.parametrize("name, schema_format, data_inputs, parameters, outputs, image", [
     ("cideconvolve_config.yaml", "bilayers", 1, 41, 1, "cellularimagingcf/w_cideconvolve:v3.3.0"),
+    ("wb_measurements_config.yaml", "bilayers", 1, 4, 1, "cellularimagingcf/wb_measurements-cellprofiler:v2.0.0"),
     ("bilayers_example.yaml", "bilayers", 2, 7, 1, "cellprofiler/runcellpose_no_pretrained:2.3.2"),
     ("W_NucleiSegmentation-ImageJ.descriptor.json", "BIAFLOWS", 0, 2, 0, "neubiaswg5/w_nucleisegmentation-imagej"),
     ("example_workflow.json", "biomero-schema", 2, 2, 2, "neubiaswg5/w_nucleitracking-imagej:1.0.0"),

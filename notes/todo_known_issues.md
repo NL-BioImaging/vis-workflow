@@ -2,7 +2,9 @@
 
 Test descriptors: cideconvolve
 [config.yaml](https://github.com/Cellular-Imaging-Amsterdam-UMC/cideconvolve/blob/main/config.yaml) (Bilayers,
-~40 parameters), biomero-schema `tests/bilayers_example.yaml` (Cellpose), `tests/W_NucleiSegmentation-ImageJ.descriptor.json`
+41 parameters), WB_Measurements-CellProfiler
+[config.yaml](https://github.com/Cellular-Imaging-Amsterdam-UMC/WB_Measurements-CellProfiler/blob/master/config.yaml)
+(Bilayers, 4 parameters, measurement output), biomero-schema `tests/bilayers_example.yaml` (Cellpose), `tests/W_NucleiSegmentation-ImageJ.descriptor.json`
 (BIAFLOWS), `tests/example_workflow.json` (native). Design: [design.md](design.md).
 
 ## In progress
@@ -23,10 +25,13 @@ with `puppeteer.json`: `{"executablePath": "C:/Program Files (x86)/Microsoft/Edg
 `vis-workflow mermaid|convert|view`, GitHub URL resolution with descriptor discovery; 35 tests in 0.25s.
 `view` on a local file is untested end to end until the portal exists (phase 3); its server is tested.
 
-### 3. Web portal
-- Static page with `?source=`, Pyodide loading the package wheel, mermaid.js render, option toggles,
-  SVG/PNG download, copy Mermaid, details panel, errors.
-- GitHub Actions: tests, build wheel, deploy Pages.
+### 3. Web portal - done locally, not deployed
+`web/` + `.github/workflows/pages.yml`. Checked in Edge via Playwright (scratch script, not in the repo): the four
+examples, a local file through the `view` server (grouped mode), the missing-repo error, mode switch, fit toggle,
+dark theme, phone width.
+- To deploy: push to main with Pages source set to "GitHub Actions" (repository settings).
+- No automated browser test in CI yet; could add a Playwright smoke test of one example.
+- PNG download left out: Mermaid's HTML labels make a canvas export tainted; SVG download covers it.
 
 ### 4. Later
 - Gallery of known Bilayers/BIOMERO workflows; embed mode.
