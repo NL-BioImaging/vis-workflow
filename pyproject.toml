@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vis-workflow"
+version = "0.1.0"
+description = "Visualise bioimage workflow descriptors (Bilayers, BIAFLOWS, biomero-schema) as Mermaid diagrams"
+authors = [{name = "Joost de Folter"}]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+dependencies = [
+    # Bilayers parsing needs NL-BioImaging/biomero-schema PR #8 until it is released
+    "biomero-schema @ git+https://github.com/NL-BioImaging/biomero-schema@feature/bilayers-adapter",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

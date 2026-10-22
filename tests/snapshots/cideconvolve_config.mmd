@@ -1,0 +1,41 @@
+flowchart LR
+  subgraph inputs["Inputs"]
+    in_infolder[/"Input Images<br/>image · tif, tiff, ometif, ometiff … · multiple<br/>--infolder"/]
+  end
+  tool[["cideconvolve<br/>cellularimagingcf/w_cideconvolve:v3.3.0<br/>python wrapper.py"]]
+  subgraph parameters["Parameters"]
+    direction LR
+    param_method["Deconvolution Method = ci_rl"]
+    param_iterations["RL Iterations = 60"]
+    param_convergence["Convergence Mode = auto"]
+    param_rel_threshold["Convergence Threshold = 0.005"]
+    param_start["Initial Estimate = auto"]
+    param_microscope_type["Microscope Type = confocal"]
+    param_na["Numerical Aperture = 1.4"]
+    param_pinhole_airy["Confocal Pinhole (AU) = 1"]
+    param_refractive_index["Immersion Medium = oil (1.515)"]
+    param_sample_ri["Sample / Mounting Medium = prolong gold (1.47)"]
+    param_excitation_wl["Excitation Wavelengths (nm) = 488"]
+    param_emission_wl["Emission Wavelengths (nm) = 520"]
+    param_pixel_size_xy["Pixel Size XY (nm) = 65.0"]
+    param_pixel_size_z["Pixel Size Z (nm) = 200.0"]
+    param_overrule_image_metadata["Overrule Image Metadata = false"]
+    param_projection["Z Projection = none"]
+    param_snr_mode["SNR Mode = none"]
+    param_snr_value["SNR Value = 4.0"]
+    param_acuity["Acuity = 0.0"]
+    param_advanced["+22 advanced parameters"]
+    param_method ~~~ param_iterations ~~~ param_convergence
+    param_rel_threshold ~~~ param_start ~~~ param_microscope_type
+    param_na ~~~ param_pinhole_airy ~~~ param_refractive_index
+    param_sample_ri ~~~ param_excitation_wl ~~~ param_emission_wl
+    param_pixel_size_xy ~~~ param_pixel_size_z ~~~ param_overrule_image_metadata
+    param_projection ~~~ param_snr_mode ~~~ param_snr_value
+    param_acuity ~~~ param_advanced
+  end
+  subgraph outputs["Outputs"]
+    out_output_dir[/"Deconvolved Outputs<br/>image · ometiff, tif, tiff, zarr … · multiple<br/>--outfolder"/]
+  end
+  in_infolder --> tool
+  parameters -.-> tool
+  tool --> out_output_dir

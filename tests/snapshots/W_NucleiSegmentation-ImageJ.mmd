@@ -1,0 +1,8 @@
+flowchart LR
+  tool[["NucleiSegmentation-ImageJ<br/>neubiaswg5/w_nucleisegmentation-imagej<br/>python wrapper.py CYTOMINE_HOST CYTOMINE_PUBLIC_KEY CYTOMIN…"]]
+  subgraph parameters["Parameters"]
+    direction LR
+    param_ij_radius["Radius = 5"]
+    param_ij_threshold["Threshold = -0.5"]
+  end
+  parameters -.-> tool

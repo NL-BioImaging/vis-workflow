@@ -1,0 +1,20 @@
+flowchart LR
+  subgraph inputs["Inputs"]
+    in_dir[/"Input Image Directory<br/>image · tiff, ometiff, omezarr · multiple<br/>--dir"/]
+    in_custom_model[/"Add Model (optional)<br/>file · unix · single<br/>--add_model"/]
+  end
+  tool[["Cellpose<br/>cellprofiler/runcellpose_no_pretrained:2.3.2<br/>python -m cellpose --verbose"]]
+  subgraph parameters["Parameters"]
+    direction LR
+    param_pretrained_model["PreTrained Model = cyto"]
+    param_diameter["Diameter = 30"]
+    param_save_omezarr["Save Ome-zarr = false"]
+    param_advanced["+4 advanced parameters"]
+  end
+  subgraph outputs["Outputs"]
+    out_omezarr_images[/"Segmented Ome-zarr images (optional)<br/>image · omezarr · single"/]
+  end
+  in_dir --> tool
+  in_custom_model --> tool
+  parameters -.-> tool
+  tool --> out_omezarr_images

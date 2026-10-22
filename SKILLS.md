@@ -19,6 +19,7 @@ Follow these when making changes here. Design: [notes/design.md](notes/design.md
 - Comments explain WHY (a hidden constraint, a subtle invariant), never WHAT (identifiers already say that).
 
 ## Testing
+- Keep tests as small and fast as possible: the fewest cases that cover each path, no overlapping tests, no repeated loading of large fixtures where a small one does.
 - Fixtures in `tests/fixtures/`: cideconvolve `config.yaml` (Bilayers, large), biomero-schema's `bilayers_example.yaml`, `W_NucleiSegmentation-ImageJ.descriptor.json` (BIAFLOWS) and `example_workflow.json` (native).
 - Test Mermaid output structurally (nodes, edges, labels present), plus one snapshot per fixture - not by eye.
 - Tests never hit the network; URL handling is tested on the rewrite logic with fixed strings.
@@ -28,7 +29,7 @@ Follow these when making changes here. Design: [notes/design.md](notes/design.md
 ## Code style
 - Avoid `continue` statements - restructure the loop body (e.g. invert the condition) instead.
 - No single-letter variable names, comprehension variables included: `param for param in params`, not `p for p in params`.
-- Reuse and extend existing functionality instead of writing a new module that parallels it.
+- Reuse as much as possible: existing libraries (biomero-schema, mermaid) and existing code here; extend a helper rather than duplicate a block, and never write a new module that parallels an existing one.
 - No atomic one-line wrapper functions; keep code intuitive over clever.
 - For a restructure, write a detailed plan first and agree it before editing.
 

@@ -47,9 +47,14 @@ flowchart LR
 
 - Data nodes: label, type, formats (truncated), file count, CLI flag. Tool node: name, image (+tag from raw
   descriptor), command.
-- Parameters are many (cideconvolve: ~40), so options: `collapsed` (one "N parameters" node), `beginner`
-  (hide `mode: advanced`), `grouped` (by `section_id`, from raw), `all`.
-- Node ids from sanitised descriptor ids; labels escaped/quoted.
+- Parameters are many (cideconvolve: 41), so modes: `beginner` (default; `mode: advanced` summarised as one
+  "+N advanced parameters" node), `all`, `grouped` (by `section_id`, from raw), `collapsed` (one "N parameters"
+  node), `none`.
+- Parameter layout: a subgraph linked as a whole (`parameters -.-> tool`) is laid out on its own, top-down, which
+  puts unlinked nodes in one wide row. So the subgraph sets `direction LR` and rows are chained with invisible
+  links (`~~~`) into a grid: one column up to 7 parameters, at most 4 columns.
+- Node ids from sanitised descriptor ids; labels escaped/quoted (`#quot;`, `#lt;`, `#gt;`, `#35;`, `#96;`).
+- Checked by rendering every fixture in every mode with mermaid-cli 11.
 
 ## Web portal
 - Static site on GitHub Pages; no server.
