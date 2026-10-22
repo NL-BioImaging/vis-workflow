@@ -25,11 +25,10 @@ with `puppeteer.json`: `{"executablePath": "C:/Program Files (x86)/Microsoft/Edg
 `vis-workflow mermaid|convert|view`, GitHub URL resolution with descriptor discovery; 35 tests in 0.25s.
 `view` on a local file is untested end to end until the portal exists (phase 3); its server is tested.
 
-### 3. Web portal - done locally, not deployed
-`web/` + `.github/workflows/pages.yml`. Checked in Edge via Playwright (scratch script, not in the repo): the four
-examples, a local file through the `view` server (grouped mode), the missing-repo error, mode switch, fit toggle,
-dark theme, phone width.
-- To deploy: push to main with Pages source set to "GitHub Actions" (repository settings).
+### 3. Web portal - done, live at https://nl-bioimaging.github.io/vis-workflow/
+`web/` + `.github/workflows/pages.yml` (deploys on push to main). Checked in Edge via Playwright (scratch script,
+not in the repo): the four examples, a local file through the `view` server (grouped mode), the missing-repo error,
+mode switch, fit toggle, dark theme, phone width; cideconvolve and WB_Measurements on the live site.
 - No automated browser test in CI yet; could add a Playwright smoke test of one example.
 - PNG download left out: Mermaid's HTML labels make a canvas export tainted; SVG download covers it.
 
