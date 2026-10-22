@@ -23,7 +23,7 @@ Follow these when making changes here. Design: [notes/design.md](notes/design.md
 - Fixtures in `tests/fixtures/`: cideconvolve `config.yaml` (Bilayers, large), WB_Measurements-CellProfiler `config.yaml` (Bilayers, small, measurement output), biomero-schema's `bilayers_example.yaml`, `W_NucleiSegmentation-ImageJ.descriptor.json` (BIAFLOWS) and `example_workflow.json` (native).
 - Test Mermaid output structurally (nodes, edges, labels present), plus one snapshot per fixture - not by eye. Update snapshots with `VIS_WORKFLOW_UPDATE_SNAPSHOTS=1`.
 - After a diagram change, check it actually renders (no Node install needed; uses the installed Edge): `PUPPETEER_SKIP_DOWNLOAD=true pixi exec --spec nodejs -- npx.cmd -y @mermaid-js/mermaid-cli@11 -p puppeteer.json -i x.mmd -o x.png`, with `puppeteer.json`: `{"executablePath": "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"}`.
-- Tests never hit the network; URL handling is tested on the rewrite logic with fixed strings.
+- Tests never hit the network; URL handling is tested on the rewrite logic with fixed strings. The one exception is the opt-in portal smoke test (`tests/test_portal.py`, loads Pyodide and Mermaid from the CDN): run it after a portal change with `python web/build.py` then `VIS_WORKFLOW_BROWSER=msedge pytest tests/test_portal.py` (needs the `browser` extra). CI runs it before every Pages deploy.
 - Before adding a test, check for an existing one covering the same path - extend or parametrize it rather than adding a near-duplicate.
 - Add tests to the existing file matching the module under test; only a substantial, self-contained feature gets its own test file.
 

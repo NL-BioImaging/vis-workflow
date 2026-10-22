@@ -20,6 +20,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest>=8.0"]
+browser = ["playwright>=1.40"]
 
 [project.scripts]
 vis-workflow = "vis_workflow.cli:cli"

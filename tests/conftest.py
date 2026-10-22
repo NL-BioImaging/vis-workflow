@@ -1,6 +1,7 @@
 import functools
 import json
 import os
+import re
 from pathlib import Path
 
 import pytest
@@ -17,6 +18,18 @@ FIXTURE_NAMES = [
     "W_NucleiSegmentation-ImageJ.descriptor.json",
     "example_workflow.json",
 ]
+NODE = re.compile(r"^\s+(\w+)(?:\[\[|\[/|\[)\"([^\"]*)\"(?:\]\]|/\]|\])$")
+
+
+def nodes(text):
+    """Node id -> label; fails on any node line whose label is not a single quoted string."""
+    found = {}
+    for line in text.splitlines():
+        if "[" in line and not line.strip().startswith("subgraph"):
+            match = NODE.match(line)
+            assert match, f"Malformed node line: {line!r}"
+            found[match.group(1)] = match.group(2)
+    return found
 
 
 @functools.cache

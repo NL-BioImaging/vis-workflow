@@ -2,21 +2,8 @@ import re
 
 import pytest
 
-from conftest import FIXTURE_NAMES, load_fixture, load_raw
+from conftest import FIXTURE_NAMES, load_fixture, load_raw, nodes
 from vis_workflow import to_mermaid
-
-NODE = re.compile(r"^\s+(\w+)(?:\[\[|\[/|\[)\"([^\"]*)\"(?:\]\]|/\]|\])$")
-
-
-def nodes(text):
-    """Node id -> label; fails on any node line whose label is not a single quoted string."""
-    found = {}
-    for line in text.splitlines():
-        if "[" in line and not line.strip().startswith("subgraph"):
-            match = NODE.match(line)
-            assert match, f"Malformed node line: {line!r}"
-            found[match.group(1)] = match.group(2)
-    return found
 
 
 @pytest.mark.parametrize("name", FIXTURE_NAMES)

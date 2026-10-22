@@ -14,7 +14,6 @@ Portal: https://nl-bioimaging.github.io/vis-workflow/
 
 ## TODO
 - Switch dependency to the biomero-schema release once PR #8 is released.
-- Automated browser smoke test in CI (Playwright, one example).
 - Many one-parameter section boxes make the Parameters column tall (Cellpose example); small boxes could sit side
   by side.
 - Gallery of known Bilayers/BIOMERO workflows; embed mode.

@@ -26,6 +26,14 @@ jobs:
           python-version: "3.11"
       - name: Build the wheels the portal installs into Pyodide
         run: python web/build.py
+      - name: Install the browser test dependencies
+        run: |
+          python -m pip install -e ".[test,browser]"
+          python -m playwright install --with-deps chromium
+      - name: Smoke test the portal in a browser
+        env:
+          VIS_WORKFLOW_BROWSER: chromium
+        run: python -m pytest -q tests/test_portal.py
       - name: Upload GitHub Pages artifact
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
