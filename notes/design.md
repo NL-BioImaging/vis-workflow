@@ -61,7 +61,8 @@ flowchart LR
   puts unlinked nodes in one wide row. So parameters sit in a grid: `direction LR` with rows chained by invisible
   links (`~~~`), one column up to 7 parameters, at most 4 columns.
 - Group boxes (Basic/Advanced, sections) are placed in no fixed order when unlinked, so the Parameters box is
-  `direction TB` with the groups chained by invisible links, keeping the descriptor's order.
+  `direction TB` with the groups chained by invisible links, keeping the descriptor's order. Boxes always stack
+  vertically, also small ones (decided against placing them side by side).
 - Node ids from sanitised descriptor ids; labels escaped/quoted (`#quot;`, `#lt;`, `#gt;`, `#35;`, `#96;`).
 - Checked by rendering every fixture in every mode with mermaid-cli 11.
 
@@ -77,7 +78,12 @@ flowchart LR
 - Pinned: Pyodide 314.0.7 (Python 3.14, so CI also tests 3.14), mermaid 11.17.2 (same major as the mermaid-cli used
   to check rendering).
 - Mermaid `securityLevel: "strict"`: descriptor text comes from arbitrary URLs.
-- Page: URL box + example links, parameter mode, copy Mermaid, download SVG, details panel (name, description,
+- PNG download: HTML labels (`foreignObject`) block canvas export, so the PNG comes from a second render with
+  `%%{init: {"htmlLabels": false}}%%` (top-level key; `flowchart.htmlLabels` is ignored in Mermaid 11), drawn on a
+  canvas at 2x. Plain labels show `<b>` literally, so it is stripped and each node's first line made bold by CSS.
+  Markdown labels (`**bold**`) were tried instead: bold in both modes, but in plain mode backslash escapes drop the
+  escaped characters and entity codes show raw, so user text with `_` or `*` could not be shown safely.
+- Page: URL box + example links, parameter mode, copy Mermaid, download SVG/PNG, details panel (name, description,
   format, container, command, citations with DOI links, descriptor URL), errors with a CORS hint. `?source=` and
   `?params=` kept in the address for sharing. Light/dark from the system.
 - Diagram rendered at natural size; "Fit to width" (default on) scales it with CSS for the overview, off shows

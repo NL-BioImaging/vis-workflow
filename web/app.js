@@ -156,14 +156,38 @@ function updateAddress(source) {
   history.replaceState(null, "", `?${query}`);
 }
 
-function download() {
-  const blob = new Blob([element("diagram").innerHTML], { type: "image/svg+xml" });
+function save(blob, extension) {
   const link = Object.assign(document.createElement("a"), {
     href: URL.createObjectURL(blob),
-    download: `${workflowName}.svg`,
+    download: `${workflowName}.${extension}`,
   });
   link.click();
   URL.revokeObjectURL(link.href);
+}
+
+async function downloadPng() {
+  // HTML labels (foreignObject) block canvas export, so re-render with plain SVG text labels, which
+  // show <b> literally: strip it (user text has '<' escaped) and bold each node's first line instead
+  const plainText = mermaidText.replaceAll("<b>", "").replaceAll("</b>", "");
+  const { svg } = await mermaid.render("png-svg", `%%{init: {"htmlLabels": false}}%%\n${plainText}`);
+  const svgElement = new DOMParser().parseFromString(svg, "image/svg+xml").documentElement;
+  const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
+  style.textContent = ".node text > tspan:first-child tspan { font-weight: bold; }";
+  svgElement.append(style);
+  const { width, height } = svgElement.viewBox.baseVal;
+  svgElement.setAttribute("width", width);
+  svgElement.setAttribute("height", height);
+
+  const image = new Image();
+  image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(svgElement))}`;
+  await image.decode();
+  const scale = 2;
+  const canvas = Object.assign(document.createElement("canvas"), { width: width * scale, height: height * scale });
+  const context = canvas.getContext("2d");
+  context.fillStyle = getComputedStyle(element("diagram")).backgroundColor;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+  save(await new Promise((resolve) => canvas.toBlob(resolve, "image/png")), "png");
 }
 
 for (const [label, url] of Object.entries(EXAMPLES)) {
@@ -190,7 +214,12 @@ element("copy").addEventListener("click", async () => {
   await navigator.clipboard.writeText(mermaidText);
   setStatus("Mermaid copied - paste it into a ```mermaid block on GitHub.");
 });
-element("download").addEventListener("click", download);
+element("download").addEventListener("click", () => {
+  save(new Blob([element("diagram").innerHTML], { type: "image/svg+xml" }), "svg");
+});
+element("download-png").addEventListener("click", () => {
+  downloadPng().catch((error) => setStatus(`PNG export failed: ${error.message}`, true));
+});
 
 const query = new URLSearchParams(location.search);
 if (query.has("params")) {

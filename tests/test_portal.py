@@ -49,6 +49,13 @@ def test_portal_renders_descriptor_from_view_server():
                 timeout=180_000)
             status = page.inner_text("#status")
             rendered = page.locator("#diagram svg .node").count()
+            with page.expect_download() as download:
+                page.click("#download-png")
+            png = Path(download.value.path()).read_bytes()
+            # The PNG's plain-label render must not leak into the on-screen diagram's HTML labels
+            page.select_option("#params", "beginner")
+            page.wait_for_timeout(500)
+            html_labels = page.locator("#diagram svg foreignObject").count()
             browser.close()
     finally:
         portal.shutdown()
@@ -56,3 +63,5 @@ def test_portal_renders_descriptor_from_view_server():
     assert status == ""
     assert errors == []
     assert rendered == len(nodes(to_mermaid(load_fixture(name))))
+    assert png.startswith(b"\x89PNG") and len(png) > 10_000
+    assert html_labels > 0

@@ -14,8 +14,6 @@ Portal: https://nl-bioimaging.github.io/vis-workflow/
 
 ## TODO
 - Switch dependency to the biomero-schema release once PR #8 is released.
-- Many one-parameter section boxes make the Parameters column tall (Cellpose example); small boxes could sit side
-  by side.
 - Gallery of known Bilayers/BIOMERO workflows; embed mode.
 - Multi-step pipelines: chain tools by matching output -> input types.
 
@@ -29,5 +27,6 @@ released, install from branch `feature/bilayers-adapter`.
 BIAFLOWS descriptors have no outputs, and their data inputs are the Cytomine ones the parser filters out, so only
 the tool and parameters show.
 
-### No PNG download in the portal
-Mermaid's HTML labels make a canvas export tainted; SVG download covers it.
+### PNG export: wrapped titles only partly bold
+The PNG is rendered with plain SVG text labels, where `<b>` is not supported; the first line of each node is made
+bold instead, so a title that wraps (e.g. "Excitation Wavelengths / (nm)") is bold on its first line only.
