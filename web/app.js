@@ -3,6 +3,7 @@ import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.17.2/dist/mermaid.e
 const PYODIDE_URL = "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/";
 const EXAMPLES = {
   "cideconvolve (Bilayers)": "https://github.com/Cellular-Imaging-Amsterdam-UMC/cideconvolve",
+  "WB Measurements (Bilayers)": "https://github.com/Cellular-Imaging-Amsterdam-UMC/WB_Measurements-CellProfiler",
   "InstanSeg (Bilayers)":
     "https://github.com/bilayer-containers/bilayers/blob/main/tests/fixtures/instanseg_inference/config.yaml",
   "NucleiSegmentation (BIAFLOWS)": "https://github.com/Neubias-WG5/W_NucleiSegmentation-ImageJ",
