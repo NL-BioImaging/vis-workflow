@@ -215,7 +215,9 @@ element("copy").addEventListener("click", async () => {
   setStatus("Mermaid copied - paste it into a ```mermaid block on GitHub.");
 });
 element("download").addEventListener("click", () => {
-  save(new Blob([element("diagram").innerHTML], { type: "image/svg+xml" }), "svg");
+  // XML, not innerHTML: label HTML such as <br> must be well-formed for a standalone SVG file
+  const svg = new XMLSerializer().serializeToString(element("diagram").querySelector("svg"));
+  save(new Blob([svg], { type: "image/svg+xml" }), "svg");
 });
 element("download-png").addEventListener("click", () => {
   downloadPng().catch((error) => setStatus(`PNG export failed: ${error.message}`, true));

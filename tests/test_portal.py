@@ -7,6 +7,7 @@ import functools
 import http.server
 import os
 import threading
+import xml.etree.ElementTree as ElementTree
 from pathlib import Path
 
 import pytest
@@ -52,6 +53,9 @@ def test_portal_renders_descriptor_from_view_server():
             with page.expect_download() as download:
                 page.click("#download-png")
             png = Path(download.value.path()).read_bytes()
+            with page.expect_download() as download:
+                page.click("#download")
+            svg = Path(download.value.path()).read_text(encoding="utf-8")
             # The PNG's plain-label render must not leak into the on-screen diagram's HTML labels
             page.select_option("#params", "beginner")
             page.wait_for_timeout(500)
@@ -64,4 +68,6 @@ def test_portal_renders_descriptor_from_view_server():
     assert errors == []
     assert rendered == len(nodes(to_mermaid(load_fixture(name))))
     assert png.startswith(b"\x89PNG") and len(png) > 10_000
+    # A standalone SVG file must be well-formed XML, unlike SVG inline in HTML
+    assert ElementTree.fromstring(svg).tag == "{http://www.w3.org/2000/svg}svg"
     assert html_labels > 0
