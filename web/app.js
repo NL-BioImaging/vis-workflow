@@ -149,7 +149,7 @@ function showDetails({ format, image, workflow }, url) {
 
 function updateAddress(source) {
   const query = new URLSearchParams({ source });
-  if (element("params").value !== "beginner") {
+  if (element("params").value !== "all") {
     query.set("params", element("params").value);
   }
   history.replaceState(null, "", `?${query}`);

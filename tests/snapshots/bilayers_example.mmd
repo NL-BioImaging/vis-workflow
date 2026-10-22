@@ -1,18 +1,28 @@
 flowchart LR
   subgraph inputs["Inputs"]
-    in_dir[/"Input Image Directory<br/>image · tiff, ometiff, omezarr · multiple<br/>--dir"/]
-    in_custom_model[/"Add Model (optional)<br/>file · unix · single<br/>--add_model"/]
+    in_dir[/"<b>Input Image Directory</b><br/>type: image<br/>formats: tiff, ometiff, omezarr<br/>files: multiple<br/>flag: --dir"/]
+    in_custom_model[/"<b>Add Model (optional)</b><br/>type: file<br/>formats: unix<br/>files: single<br/>flag: --add_model"/]
   end
-  tool[["Cellpose<br/>cellprofiler/runcellpose_no_pretrained:2.3.2<br/>python -m cellpose --verbose"]]
+  tool[["<b>Cellpose</b><br/>container: cellprofiler/runcellpose_no_pretrained:2.3.2<br/>command: python -m cellpose --verbose"]]
   subgraph parameters["Parameters"]
-    direction LR
-    param_pretrained_model["PreTrained Model = cyto"]
-    param_diameter["Diameter = 30"]
-    param_save_omezarr["Save Ome-zarr = false"]
-    param_advanced["+4 advanced parameters"]
+    direction TB
+    subgraph group_Basic["Basic"]
+      direction LR
+      param_pretrained_model["<b>PreTrained Model</b><br/>cyto"]
+      param_diameter["<b>Diameter</b><br/>30"]
+      param_save_omezarr["<b>Save Ome-zarr</b><br/>false"]
+    end
+    subgraph group_Advanced["Advanced"]
+      direction LR
+      param_channel_axis["<b>Channel Axis</b><br/>0"]
+      param_stitch_threshold["<b>Stitch Threshold</b><br/>0.0"]
+      param_min_size["<b>Min Size</b><br/>15"]
+      param_save_dir["<b>Save Directory</b><br/>/output_images"]
+    end
+    group_Basic ~~~ group_Advanced
   end
   subgraph outputs["Outputs"]
-    out_omezarr_images[/"Segmented Ome-zarr images (optional)<br/>image · omezarr · single"/]
+    out_omezarr_images[/"<b>Segmented Ome-zarr images (optional)</b><br/>type: image<br/>formats: omezarr<br/>files: single"/]
   end
   in_dir --> tool
   in_custom_model --> tool

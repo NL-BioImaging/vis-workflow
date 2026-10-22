@@ -1,17 +1,17 @@
 flowchart LR
   subgraph inputs["Inputs"]
-    in_input_image[/"Input Image Stack<br/>image · tif<br/>--input"/]
-    in_config_file[/"Configuration File (optional)<br/>file · csv<br/>--config"/]
+    in_input_image[/"<b>Input Image Stack</b><br/>type: image<br/>formats: tif<br/>flag: --input"/]
+    in_config_file[/"<b>Configuration File (optional)</b><br/>type: file<br/>formats: csv<br/>flag: --config"/]
   end
-  tool[["NucleiTracking-ImageJ<br/>neubiaswg5/w_nucleitracking-imagej:1.0.0<br/>python wrapper.py [INPUT_IMAGE] --radius [RADIUS] --thresho…"]]
+  tool[["<b>NucleiTracking-ImageJ</b><br/>container: neubiaswg5/w_nucleitracking-imagej:1.0.0<br/>command: python wrapper.py [INPUT_IMAGE] --radius [RADIUS] --thresho…"]]
   subgraph parameters["Parameters"]
     direction LR
-    param_radius["Detection Radius = 5"]
-    param_threshold["Detection Threshold = 100"]
+    param_radius["<b>Detection Radius</b><br/>5"]
+    param_threshold["<b>Detection Threshold</b><br/>100"]
   end
   subgraph outputs["Outputs"]
-    out_track_count[/"Number of Tracks<br/>Number"/]
-    out_output_path[/"Output File Path<br/>String"/]
+    out_track_count[/"<b>Number of Tracks</b><br/>type: Number"/]
+    out_output_path[/"<b>Output File Path</b><br/>type: String"/]
   end
   in_input_image --> tool
   in_config_file --> tool

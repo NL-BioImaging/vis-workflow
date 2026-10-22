@@ -31,7 +31,7 @@ def cli():
 
 @cli.command()
 @click.argument("source")
-@click.option("--params", type=click.Choice(PARAM_MODES), default="beginner", show_default=True,
+@click.option("--params", type=click.Choice(PARAM_MODES), default=PARAM_MODES[0], show_default=True,
               help="How to show parameters.")
 @OUTPUT_OPTION
 def mermaid(source, params, output):

@@ -6,18 +6,22 @@ JSON - as a Mermaid diagram of its inputs, parameters and outputs.
 ```mermaid
 flowchart LR
   subgraph inputs["Inputs"]
-    in_infolder[/"Input Images<br/>image · tif, tiff, ometif, ometiff … · multiple<br/>--infolder"/]
+    in_infolder[/"<b>Images and masks</b><br/>type: image<br/>formats: ometiff, omezarr<br/>files: multiple<br/>flag: --infolder"/]
   end
-  tool[["cideconvolve<br/>cellularimagingcf/w_cideconvolve:v3.3.0<br/>python wrapper.py"]]
+  tool[["<b>Measurements-CellProfiler</b><br/>container: cellularimagingcf/wb_measurements-cellprofiler:v2.0.0<br/>command: python /app/cellprofiler_run.py"]]
   subgraph parameters["Parameters"]
-    param_summary["41 parameters"]
+    direction LR
+    param_nuclei_mask_suffix["<b>Suffix for Nuclei Mask</b><br/>_Nuclei_Mask"]
+    param_cells_mask_suffix["<b>Suffix for Cells Mask</b><br/>_Cells_Mask"]
+    param_aggregates_mask_suffix["<b>Suffix for Aggregates Mask</b><br/>_Aggregates_Mask"]
+    param_metric_channels["<b>Channels to measure</b><br/>1,2,3"]
   end
   subgraph outputs["Outputs"]
-    out_output_dir[/"Deconvolved Outputs<br/>image · ometiff, tif, tiff, zarr … · multiple<br/>--outfolder"/]
+    out_outfolder[/"<b>Measurement tables</b><br/>type: measurement<br/>formats: csv<br/>files: multiple<br/>flag: --outfolder"/]
   end
   in_infolder --> tool
   parameters -.-> tool
-  tool --> out_output_dir
+  tool --> out_outfolder
 ```
 
 ## Web portal
@@ -51,10 +55,10 @@ From Python:
 from vis_workflow import load_descriptor, to_mermaid
 
 descriptor = load_descriptor(open("config.yaml", encoding="utf-8").read())
-print(to_mermaid(descriptor, params="beginner"))
+print(to_mermaid(descriptor, params="all"))
 ```
 
-Parameter modes: `beginner` (default; advanced parameters summarised), `all`, `grouped` (by Bilayers section),
-`collapsed` (one summary node), `none`.
+Parameter modes: `all` (default; advanced parameters in their own box), `beginner` (advanced ones summarised in
+one node), `grouped` (by Bilayers section), `collapsed` (one summary node), `none`.
 
 Design and plans: [notes/design.md](notes/design.md), [notes/todo_known_issues.md](notes/todo_known_issues.md).

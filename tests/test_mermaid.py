@@ -33,7 +33,8 @@ def test_diagram(name, snapshot):
 
 
 @pytest.mark.parametrize("mode, shown, summary, rows", [
-    ("all", 41, None, [4] * 10),
+    # all: Basic (19, 3 columns) and Advanced (22, 4 columns) boxes, then the chain fixing their order
+    ("all", 41, None, [3] * 6 + [4] * 5 + [2] + [2]),
     ("beginner", 19, "+22 advanced parameters", [3] * 6 + [2]),
     ("collapsed", 0, "41 parameters", []),
     ("none", 0, None, []),
@@ -47,15 +48,19 @@ def test_parameter_modes(mode, shown, summary, rows):
     assert ("parameters -.-> tool" in text) == (mode != "none")
 
 
-@pytest.mark.parametrize("name, sections", [
-    ("cideconvolve_config.yaml", ["essential", "method", "advanced"]),
-    ("example_workflow.json", ["other"]),
+@pytest.mark.parametrize("name, mode, groups", [
+    ("cideconvolve_config.yaml", "all", ["Basic", "Advanced"]),
+    ("cideconvolve_config.yaml", "grouped", ["essential", "advanced", "method"]),
+    ("example_workflow.json", "grouped", ["other"]),
+    ("example_workflow.json", "all", []),
 ])
-def test_grouped_by_section(name, sections):
-    text = to_mermaid(load_fixture(name), params="grouped")
-    nodes(text)
-    for section in sections:
-        assert f'subgraph section_{section}["{section}"]' in text
+def test_groups_in_descriptor_order(name, mode, groups):
+    text = to_mermaid(load_fixture(name), params=mode)
+    for group in groups:
+        assert f'subgraph group_{group}["{group}"]' in text
+    assert text.count("subgraph group_") == len(groups)
+    assert ("~~~ group_" in text) == (len(groups) > 1)
+    assert len(groups) < 2 or " ~~~ ".join(f"group_{group}" for group in groups) in text
 
 
 def test_unknown_mode_rejected():
@@ -68,5 +73,5 @@ def test_labels_escaped_and_ids_unique(bilayers_raw):
     first, second = bilayers_raw["parameters"][:2]
     first["name"], second["name"] = "a-b", "a.b"
     found = nodes(to_mermaid(load_raw(bilayers_raw), params="all"))
-    assert found["in_dir"].split("<br/>")[0] == "Say #quot;hi#quot; #lt;b#gt;#35;1#lt;/b#gt; #96;code#96;"
+    assert found["in_dir"].split("<br/>")[0] == "<b>Say #quot;hi#quot; #lt;b#gt;#35;1#lt;/b#gt; #96;code#96;</b>"
     assert {"param_a_b", "param_a_b_2"} <= found.keys()

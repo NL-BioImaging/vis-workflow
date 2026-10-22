@@ -43,10 +43,6 @@ mode switch, fit toggle, dark theme, phone width; cideconvolve and WB_Measuremen
 [PR #8](https://github.com/NL-BioImaging/biomero-schema/pull/8) is needed to parse Bilayers descriptors. Until
 released, install from branch `feature/bilayers-adapter`.
 
-### Grouped mode: section order not kept
-Mermaid stacks the section subgraphs in its own order (cideconvolve: method, advanced, essential rather than the
-descriptor's essential, method, advanced). Cosmetic; declaring them in reverse would depend on layout internals.
-
 ### BIAFLOWS diagrams have no data nodes
 BIAFLOWS descriptors have no outputs, and their data inputs are the Cytomine ones the parser filters out, so only
 the tool and parameters show.

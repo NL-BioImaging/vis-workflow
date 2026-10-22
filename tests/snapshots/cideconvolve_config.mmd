@@ -1,40 +1,73 @@
 flowchart LR
   subgraph inputs["Inputs"]
-    in_infolder[/"Input Images<br/>image · tif, tiff, ometif, ometiff … · multiple<br/>--infolder"/]
+    in_infolder[/"<b>Input Images</b><br/>type: image<br/>formats: tif, tiff, ometif, ometiff …<br/>files: multiple<br/>flag: --infolder"/]
   end
-  tool[["cideconvolve<br/>cellularimagingcf/w_cideconvolve:v3.3.0<br/>python wrapper.py"]]
+  tool[["<b>cideconvolve</b><br/>container: cellularimagingcf/w_cideconvolve:v3.3.0<br/>command: python wrapper.py"]]
   subgraph parameters["Parameters"]
-    direction LR
-    param_method["Deconvolution Method = ci_rl"]
-    param_iterations["RL Iterations = 60"]
-    param_convergence["Convergence Mode = auto"]
-    param_rel_threshold["Convergence Threshold = 0.005"]
-    param_start["Initial Estimate = auto"]
-    param_microscope_type["Microscope Type = confocal"]
-    param_na["Numerical Aperture = 1.4"]
-    param_pinhole_airy["Confocal Pinhole (AU) = 1"]
-    param_refractive_index["Immersion Medium = oil (1.515)"]
-    param_sample_ri["Sample / Mounting Medium = prolong gold (1.47)"]
-    param_excitation_wl["Excitation Wavelengths (nm) = 488"]
-    param_emission_wl["Emission Wavelengths (nm) = 520"]
-    param_pixel_size_xy["Pixel Size XY (nm) = 65.0"]
-    param_pixel_size_z["Pixel Size Z (nm) = 200.0"]
-    param_overrule_image_metadata["Overrule Image Metadata = false"]
-    param_projection["Z Projection = none"]
-    param_snr_mode["SNR Mode = none"]
-    param_snr_value["SNR Value = 4.0"]
-    param_acuity["Acuity = 0.0"]
-    param_advanced["+22 advanced parameters"]
-    param_method ~~~ param_iterations ~~~ param_convergence
-    param_rel_threshold ~~~ param_start ~~~ param_microscope_type
-    param_na ~~~ param_pinhole_airy ~~~ param_refractive_index
-    param_sample_ri ~~~ param_excitation_wl ~~~ param_emission_wl
-    param_pixel_size_xy ~~~ param_pixel_size_z ~~~ param_overrule_image_metadata
-    param_projection ~~~ param_snr_mode ~~~ param_snr_value
-    param_acuity ~~~ param_advanced
+    direction TB
+    subgraph group_Basic["Basic"]
+      direction LR
+      param_method["<b>Deconvolution Method</b><br/>ci_rl"]
+      param_iterations["<b>RL Iterations</b><br/>60"]
+      param_convergence["<b>Convergence Mode</b><br/>auto"]
+      param_rel_threshold["<b>Convergence Threshold</b><br/>0.005"]
+      param_start["<b>Initial Estimate</b><br/>auto"]
+      param_microscope_type["<b>Microscope Type</b><br/>confocal"]
+      param_na["<b>Numerical Aperture</b><br/>1.4"]
+      param_pinhole_airy["<b>Confocal Pinhole (AU)</b><br/>1"]
+      param_refractive_index["<b>Immersion Medium</b><br/>oil (1.515)"]
+      param_sample_ri["<b>Sample / Mounting Medium</b><br/>prolong gold (1.47)"]
+      param_excitation_wl["<b>Excitation Wavelengths (nm)</b><br/>488"]
+      param_emission_wl["<b>Emission Wavelengths (nm)</b><br/>520"]
+      param_pixel_size_xy["<b>Pixel Size XY (nm)</b><br/>65.0"]
+      param_pixel_size_z["<b>Pixel Size Z (nm)</b><br/>200.0"]
+      param_overrule_image_metadata["<b>Overrule Image Metadata</b><br/>false"]
+      param_projection["<b>Z Projection</b><br/>none"]
+      param_snr_mode["<b>SNR Mode</b><br/>none"]
+      param_snr_value["<b>SNR Value</b><br/>4.0"]
+      param_acuity["<b>Acuity</b><br/>0.0"]
+      param_method ~~~ param_iterations ~~~ param_convergence
+      param_rel_threshold ~~~ param_start ~~~ param_microscope_type
+      param_na ~~~ param_pinhole_airy ~~~ param_refractive_index
+      param_sample_ri ~~~ param_excitation_wl ~~~ param_emission_wl
+      param_pixel_size_xy ~~~ param_pixel_size_z ~~~ param_overrule_image_metadata
+      param_projection ~~~ param_snr_mode ~~~ param_snr_value
+    end
+    subgraph group_Advanced["Advanced"]
+      direction LR
+      param_device["<b>Compute Device</b><br/>auto"]
+      param_tv_lambda["<b>TV Lambda</b><br/>0.0001"]
+      param_sparse_hessian_reg["<b>Sparse Hessian Reg</b><br/>0.98"]
+      param_sparse_hessian_weight["<b>Sparse Hessian Weight</b><br/>0.6"]
+      param_output_format["<b>Output Format</b><br/>ome-zarr"]
+      param_output_dtype["<b>Output Data Type</b><br/>float32"]
+      param_streaming["<b>Large-Image Streaming</b><br/>auto"]
+      param_streaming_threshold_gb["<b>Streaming Threshold GB</b><br/>2.0"]
+      param_t_start["<b>T Start</b><br/>1"]
+      param_t_stop["<b>T Stop</b><br/>0"]
+      param_t_step["<b>T Step</b><br/>1"]
+      param_hcs_field["<b>OME-Zarr HCS Field (single field)</b><br/>auto"]
+      param_benchmark["<b>Benchmark Mode</b><br/>false"]
+      param_bench_crop["<b>Benchmark Crop</b><br/>false"]
+      param_compute_metrics["<b>Compute Image Metrics</b><br/>false"]
+      param_background["<b>Background Subtraction</b><br/>auto"]
+      param_offset["<b>Offset</b><br/>auto"]
+      param_prefilter_sigma["<b>Prefilter Sigma</b><br/>0.0"]
+      param_two_d_mode["<b>2D Widefield Mode</b><br/>auto"]
+      param_two_d_wf_aggressiveness["<b>2D WF Aggressiveness</b><br/>Balanced"]
+      param_two_d_wf_bg_radius_um["<b>2D WF Background Radius (um)</b><br/>0.5"]
+      param_two_d_wf_bg_scale["<b>2D WF Background Scale</b><br/>1.0"]
+      param_device ~~~ param_tv_lambda ~~~ param_sparse_hessian_reg ~~~ param_sparse_hessian_weight
+      param_output_format ~~~ param_output_dtype ~~~ param_streaming ~~~ param_streaming_threshold_gb
+      param_t_start ~~~ param_t_stop ~~~ param_t_step ~~~ param_hcs_field
+      param_benchmark ~~~ param_bench_crop ~~~ param_compute_metrics ~~~ param_background
+      param_offset ~~~ param_prefilter_sigma ~~~ param_two_d_mode ~~~ param_two_d_wf_aggressiveness
+      param_two_d_wf_bg_radius_um ~~~ param_two_d_wf_bg_scale
+    end
+    group_Basic ~~~ group_Advanced
   end
   subgraph outputs["Outputs"]
-    out_output_dir[/"Deconvolved Outputs<br/>image · ometiff, tif, tiff, zarr … · multiple<br/>--outfolder"/]
+    out_output_dir[/"<b>Deconvolved Outputs</b><br/>type: image<br/>formats: ometiff, tif, tiff, zarr …<br/>files: multiple<br/>flag: --outfolder"/]
   end
   in_infolder --> tool
   parameters -.-> tool

@@ -4,8 +4,9 @@ import re
 
 from vis_workflow.descriptor import Descriptor
 
-# beginner: hide parameters marked advanced; grouped: one subgraph per Bilayers section_id
-PARAM_MODES = ("beginner", "all", "grouped", "collapsed", "none")
+# all: advanced parameters in their own box; beginner: advanced ones summarised in one node;
+# grouped: one box per Bilayers section_id
+PARAM_MODES = ("all", "beginner", "grouped", "collapsed", "none")
 MAX_FORMATS = 4
 MAX_TEXT = 40
 MAX_COMMAND = 60
@@ -14,7 +15,7 @@ GRID_ROWS = 7
 GRID_MAX_COLUMNS = 4
 
 
-def to_mermaid(descriptor: Descriptor, params: str = "beginner") -> str:
+def to_mermaid(descriptor: Descriptor, params: str = "all") -> str:
     if params not in PARAM_MODES:
         raise ValueError(f"Unknown parameter mode '{params}', expected one of {PARAM_MODES}")
     node_ids = _NodeIds()
@@ -50,25 +51,35 @@ def _parameter_lines(descriptor: Descriptor, mode: str, node_ids: "_NodeIds") ->
         return []
     if mode == "collapsed":
         return [f'    {node_ids.make("param", "summary")}["{_plural(len(params), "parameter")}"]']
-    # A subgraph linked as a whole is laid out on its own, top-down: set LR so unlinked nodes stack
     if mode == "grouped":
         sections = {}
         for param in params:
             sections.setdefault(descriptor.sections.get(param.id, "other"), []).append(param)
-        lines = ["    direction LR"]
-        for section, section_params in sections.items():
-            grid = [f"  {line}" for line in _param_grid(_param_nodes(section_params, node_ids))]
-            lines.extend(_subgraph(node_ids.make("section", section), section, ["      direction LR", *grid], "    "))
-        return lines
+        return _group_lines(sections, node_ids)
+    basic = [param for param in params if param.mode != "advanced"]
+    advanced = [param for param in params if param.mode == "advanced"]
     if mode == "beginner":
-        shown = [param for param in params if param.mode != "advanced"]
-        nodes = _param_nodes(shown, node_ids)
-        hidden = len(params) - len(shown)
-        if hidden:
-            nodes.append((node_ids.make("param", "advanced"), f"+{_plural(hidden, 'advanced parameter')}"))
-    else:
-        nodes = _param_nodes(params, node_ids)
-    return ["    direction LR", *_param_grid(nodes)]
+        nodes = _param_nodes(basic, node_ids)
+        if advanced:
+            nodes.append((node_ids.make("param", "advanced"), f"+{_plural(len(advanced), 'advanced parameter')}"))
+        return ["    direction LR", *_param_grid(nodes)]
+    if basic and advanced:
+        return _group_lines({"Basic": basic, "Advanced": advanced}, node_ids)
+    return ["    direction LR", *_param_grid(_param_nodes(params, node_ids))]
+
+
+def _group_lines(groups: dict[str, list], node_ids: "_NodeIds") -> list[str]:
+    # Unlinked boxes are placed in no fixed order: chain them top-down with invisible links
+    lines = ["    direction TB"]
+    group_ids = []
+    for name, group_params in groups.items():
+        group_id = node_ids.make("group", name)
+        group_ids.append(group_id)
+        grid = [f"  {line}" for line in _param_grid(_param_nodes(group_params, node_ids))]
+        lines.extend(_subgraph(group_id, name, ["      direction LR", *grid], "    "))
+    if len(group_ids) > 1:
+        lines.append("    " + " ~~~ ".join(group_ids))
+    return lines
 
 
 def _param_nodes(params, node_ids: "_NodeIds") -> list[tuple[str, str]]:
@@ -86,38 +97,36 @@ def _param_grid(nodes: list[tuple[str, str]]) -> list[str]:
     return lines
 
 
+def _label(title: str, details=()) -> str:
+    """Bold title, then one line per detail."""
+    return "<br/>".join([f"<b>{_escape(title)}</b>", *(_escape(detail) for detail in details)])
+
+
 def _param_label(param) -> str:
-    label = _escape(_shorten(param.name or param.id))
     default = param.default_value
-    if default is None or default == "":
-        return label
     if isinstance(default, bool):
         default = str(default).lower()
-    return f"{label} = {_escape(_shorten(str(default)))}"
+    details = [] if default is None or default == "" else [_shorten(str(default))]
+    return _label(_shorten(param.name or param.id), details)
 
 
 def _data_label(param) -> str:
     name = param.name or param.id
     if param.optional:
         name += " (optional)"
-    details = [param.type]
     formats = param.format if isinstance(param.format, list) else [param.format] if param.format else []
-    if formats:
-        details.append(", ".join(formats[:MAX_FORMATS]) + (" …" if len(formats) > MAX_FORMATS else ""))
-    if param.file_count:
-        details.append(param.file_count)
-    lines = [name, " · ".join(details)]
+    formats_text = ", ".join(formats[:MAX_FORMATS]) + (" …" if len(formats) > MAX_FORMATS else "")
     # Bilayers marks data not passed on the command line with cli_tag "None"
-    if param.command_line_flag and param.command_line_flag != "None":
-        lines.append(param.command_line_flag)
-    return "<br/>".join(_escape(line) for line in lines)
+    flag = param.command_line_flag if param.command_line_flag != "None" else None
+    details = [("type", param.type), ("formats", formats_text), ("files", param.file_count), ("flag", flag)]
+    return _label(name, [f"{key}: {value}" for key, value in details if value])
 
 
 def _tool_label(descriptor: Descriptor) -> str:
-    lines = [descriptor.name, descriptor.image]
+    details = [f"container: {descriptor.image}"]
     if descriptor.workflow.command_line:
-        lines.append(_shorten(descriptor.workflow.command_line, MAX_COMMAND))
-    return "<br/>".join(_escape(line) for line in lines)
+        details.append(f"command: {_shorten(descriptor.workflow.command_line, MAX_COMMAND)}")
+    return _label(descriptor.name, details)
 
 
 def _escape(text: str) -> str:

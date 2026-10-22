@@ -29,30 +29,36 @@ biomero-schema JSON - as a diagram of the tool's inputs, parameters and outputs.
 
 ```mermaid
 flowchart LR
-  subgraph IN[Inputs]
-    in_infolder[/"Input Images<br/>image · tif, ome.tiff, zarr… · multiple<br/>--infolder"/]
+  subgraph inputs["Inputs"]
+    in_infolder[/"<b>Images and masks</b><br/>type: image<br/>formats: ometiff, omezarr<br/>files: multiple<br/>flag: --infolder"/]
   end
-  tool[["cideconvolve<br/>cellularimagingcf/w_cideconvolve:v3.3.0<br/>python wrapper.py"]]
-  subgraph PARAMS[Parameters]
-    param_method["Deconvolution Method = ci_rl"]
-    param_iterations["RL Iterations = 60"]
+  tool[["<b>Measurements-CellProfiler</b><br/>container: cellularimagingcf/wb_measurements-cellprofiler:v2.0.0<br/>command: python /app/cellprofiler_run.py"]]
+  subgraph parameters["Parameters"]
+    direction LR
+    param_nuclei_mask_suffix["<b>Suffix for Nuclei Mask</b><br/>_Nuclei_Mask"]
+    param_cells_mask_suffix["<b>Suffix for Cells Mask</b><br/>_Cells_Mask"]
+    param_aggregates_mask_suffix["<b>Suffix for Aggregates Mask</b><br/>_Aggregates_Mask"]
+    param_metric_channels["<b>Channels to measure</b><br/>1,2,3"]
   end
-  subgraph OUT[Outputs]
-    out_output_dir[/"Deconvolved Outputs<br/>image · ome.tiff, zarr, csv…<br/>--outfolder"/]
+  subgraph outputs["Outputs"]
+    out_outfolder[/"<b>Measurement tables</b><br/>type: measurement<br/>formats: csv<br/>files: multiple<br/>flag: --outfolder"/]
   end
   in_infolder --> tool
-  PARAMS -.-> tool
-  tool --> out_output_dir
+  parameters -.-> tool
+  tool --> out_outfolder
 ```
 
-- Data nodes: label, type, formats (truncated), file count, CLI flag. Tool node: name, image (+tag from raw
-  descriptor), command.
-- Parameters are many (cideconvolve: 41), so modes: `beginner` (default; `mode: advanced` summarised as one
-  "+N advanced parameters" node), `all`, `grouped` (by `section_id`, from raw), `collapsed` (one "N parameters"
-  node), `none`.
+- Every node: bold title (`<b>`), then one detail per line - combined one-line details were hard to read.
+  Data nodes: `type`, `formats` (truncated), `files`, `flag`. Tool: `container` (+tag from raw descriptor),
+  `command`. Parameters: label, value on the next line.
+- Parameters are many (cideconvolve: 41), so modes: `all` (default; when some are `mode: advanced`, a "Basic" and
+  an "Advanced" box), `beginner` (advanced ones summarised as one "+N advanced parameters" node), `grouped` (one box
+  per `section_id`, from raw), `collapsed` (one "N parameters" node), `none`.
 - Parameter layout: a subgraph linked as a whole (`parameters -.-> tool`) is laid out on its own, top-down, which
-  puts unlinked nodes in one wide row. So the subgraph sets `direction LR` and rows are chained with invisible
-  links (`~~~`) into a grid: one column up to 7 parameters, at most 4 columns.
+  puts unlinked nodes in one wide row. So parameters sit in a grid: `direction LR` with rows chained by invisible
+  links (`~~~`), one column up to 7 parameters, at most 4 columns.
+- Group boxes (Basic/Advanced, sections) are placed in no fixed order when unlinked, so the Parameters box is
+  `direction TB` with the groups chained by invisible links, keeping the descriptor's order.
 - Node ids from sanitised descriptor ids; labels escaped/quoted (`#quot;`, `#lt;`, `#gt;`, `#35;`, `#96;`).
 - Checked by rendering every fixture in every mode with mermaid-cli 11.
 
