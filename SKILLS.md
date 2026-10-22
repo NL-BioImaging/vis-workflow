@@ -1,0 +1,43 @@
+# Working conventions for this repo
+
+Follow these when making changes here. Design: [notes/design.md](notes/design.md).
+
+## Descriptor parsing
+- Read descriptors only through `biomero_schema.adapters.parse_descriptor()` - never write a parallel Bilayers/BIAFLOWS parser here.
+- An adapter bug or missing mapping is fixed upstream in biomero-schema (local clone `C:/Users/defoltj/github/biomero-schema`, origin NL-BioImaging/biomero-schema), on a branch with a PR to its `main`.
+- Fields not in `WorkflowSchema` may be read from the raw descriptor next to it, only where the diagram needs them.
+- Python and browser (Pyodide) run the same code: keep the core (`parse`, `to_mermaid`) pure Python with no file/network access; I/O lives in the CLI and the web loader.
+
+## Diagram
+- The Mermaid diagram is the main output; everything else (details panel, CLI) supports it.
+- Generated Mermaid must render on GitHub as well as in mermaid.js: escape labels, quote node text, no features newer than GitHub's Mermaid version.
+- Node ids come from sanitised descriptor ids, never from labels.
+
+## Comments
+- Code comments: 1-2 lines max, even for non-obvious WHY reasoning. No multi-line rationale blocks.
+- Never narrate what changed, reference the current fix/task, or mention specific callers/sessions in a comment - that belongs in the commit message or chat response, not the code.
+- Comments explain WHY (a hidden constraint, a subtle invariant), never WHAT (identifiers already say that).
+
+## Testing
+- Fixtures in `tests/fixtures/`: cideconvolve `config.yaml` (Bilayers, large), biomero-schema's `bilayers_example.yaml`, `W_NucleiSegmentation-ImageJ.descriptor.json` (BIAFLOWS) and `example_workflow.json` (native).
+- Test Mermaid output structurally (nodes, edges, labels present), plus one snapshot per fixture - not by eye.
+- Tests never hit the network; URL handling is tested on the rewrite logic with fixed strings.
+- Before adding a test, check for an existing one covering the same path - extend or parametrize it rather than adding a near-duplicate.
+- Add tests to the existing file matching the module under test; only a substantial, self-contained feature gets its own test file.
+
+## Code style
+- Avoid `continue` statements - restructure the loop body (e.g. invert the condition) instead.
+- No single-letter variable names, comprehension variables included: `param for param in params`, not `p for p in params`.
+- Reuse and extend existing functionality instead of writing a new module that parallels it.
+- No atomic one-line wrapper functions; keep code intuitive over clever.
+- For a restructure, write a detailed plan first and agree it before editing.
+
+## Carrying work across sessions
+- Record the current task, its plan and how far it got under "In progress" in `notes/todo_known_issues.md` before editing code, and keep it updated. Clear it once the task is done.
+- On "continue" with no other context, read that section first and resume from it.
+- Design decisions go in `notes/design.md`, with the reason; update it when a decision changes rather than appending a contradiction.
+
+## Git
+- Small, focused commits with a "why" in the message, not a changelog of "what".
+- Work on `main` by default; create a branch only for major restructures or features.
+- Never create git worktrees (no `EnterWorktree`, no `isolation: "worktree"` agents, no `git worktree add`).
