@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 
 from conftest import FIXTURES, load_fixture, nodes
-from vis_workflow import to_mermaid
+from vis_workflow import node_descriptions, to_mermaid
 from vis_workflow.cli import make_server
 from vis_workflow.sources import portal_url
 
@@ -50,6 +50,7 @@ def test_portal_renders_descriptor_from_view_server():
                 timeout=180_000)
             status = page.inner_text("#status")
             rendered = page.locator("#diagram svg .node").count()
+            hints = page.locator("#diagram svg .node > title").count()
             with page.expect_download() as download:
                 page.click("#download-png")
             png = Path(download.value.path()).read_bytes()
@@ -67,6 +68,7 @@ def test_portal_renders_descriptor_from_view_server():
     assert status == ""
     assert errors == []
     assert rendered == len(nodes(to_mermaid(load_fixture(name))))
+    assert hints == len(node_descriptions(load_fixture(name)))
     assert png.startswith(b"\x89PNG") and len(png) > 10_000
     # A standalone SVG file must be well-formed XML, unlike SVG inline in HTML
     assert ElementTree.fromstring(svg).tag == "{http://www.w3.org/2000/svg}svg"

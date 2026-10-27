@@ -68,6 +68,7 @@ button:disabled { opacity: 0.6; cursor: default; }
 }
 #diagram svg { display: block; margin: 0 auto; }
 #diagram.fit svg { max-width: 100%; height: auto; }
+#diagram .node:has(> title) { cursor: help; }
 .toolbar .check { display: flex; gap: 4px; align-items: center; font-weight: normal; }
 .check input { flex: none; }
 

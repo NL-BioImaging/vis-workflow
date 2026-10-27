@@ -86,6 +86,10 @@ flowchart LR
 - Page: URL box + example links, parameter mode, copy Mermaid, download SVG/PNG, details panel (name, description,
   format, container, command, citations with DOI links, descriptor URL), errors with a CORS hint. `?source=` and
   `?params=` kept in the address for sharing. Light/dark from the system.
+- Hover hints: each node's descriptor `description` (tool, data, parameters) becomes an SVG `<title>` on the
+  rendered node, so it also shows in the downloaded SVG. Python gives node id -> description
+  (`node_descriptions`, same ids as `to_mermaid`). Not Mermaid `click` tooltips: they need callbacks, which
+  `securityLevel: "strict"` disables, and would add lines to the Mermaid pasted into GitHub.
 - Diagram rendered at natural size; "Fit to width" (default on) scales it with CSS for the overview, off shows
   readable labels with horizontal scroll. Scaling alone made large workflows unreadable; natural size alone hid
   the tool and outputs off-screen.

@@ -14,7 +14,7 @@ const EXAMPLES = {
 // Same functions as the CLI; errors come back as text rather than Python tracebacks
 const GLUE = `
 import json
-from vis_workflow import load_descriptor, to_mermaid
+from vis_workflow import load_descriptor, node_descriptions, to_mermaid
 from vis_workflow.sources import candidate_urls
 
 descriptor = None
@@ -29,7 +29,8 @@ def load(text, name):
                        "workflow": descriptor.workflow.model_dump(mode="json", by_alias=True)})
 
 def diagram(params):
-    return to_mermaid(descriptor, params=params)
+    return json.dumps({"mermaid": to_mermaid(descriptor, params=params),
+                       "descriptions": node_descriptions(descriptor, params=params)})
 
 def candidates(source):
     return json.dumps(candidate_urls(source))
@@ -109,9 +110,23 @@ async function show(source) {
 
 async function renderDiagram() {
   const pyodide = await python;
-  mermaidText = pyodide.globals.get("diagram")(element("params").value);
+  const { mermaid: text, descriptions } = JSON.parse(pyodide.globals.get("diagram")(element("params").value));
+  mermaidText = text;
   const { svg } = await mermaid.render("diagram-svg", mermaidText);
   element("diagram").innerHTML = svg;
+  addHoverHints(descriptions);
+}
+
+// An SVG <title> shows as a native tooltip, and stays in the downloaded SVG
+function addHoverHints(descriptions) {
+  for (const node of element("diagram").querySelectorAll("svg .node")) {
+    const nodeId = node.id.match(/-flowchart-(.+)-\d+$/)?.[1];
+    if (descriptions[nodeId]) {
+      const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+      title.textContent = descriptions[nodeId];
+      node.prepend(title);
+    }
+  }
 }
 
 function showDetails({ format, image, workflow }, url) {

@@ -16,11 +16,22 @@ GRID_MAX_COLUMNS = 4
 
 
 def to_mermaid(descriptor: Descriptor, params: str = "all") -> str:
+    return _diagram(descriptor, params)[0]
+
+
+def node_descriptions(descriptor: Descriptor, params: str = "all") -> dict[str, str]:
+    """Node id -> descriptor description, for hover hints on the rendered `to_mermaid` diagram."""
+    return _diagram(descriptor, params)[1]
+
+
+def _diagram(descriptor: Descriptor, params: str) -> tuple[str, dict[str, str]]:
     if params not in PARAM_MODES:
         raise ValueError(f"Unknown parameter mode '{params}', expected one of {PARAM_MODES}")
     node_ids = _NodeIds()
-    inputs = [(node_ids.make("in", param.id), param) for param in descriptor.data_inputs]
-    outputs = [(node_ids.make("out", param.id), param) for param in descriptor.outputs]
+    if descriptor.workflow.description:
+        node_ids.descriptions["tool"] = descriptor.workflow.description
+    inputs = [(node_ids.make("in", param.id, param.description), param) for param in descriptor.data_inputs]
+    outputs = [(node_ids.make("out", param.id, param.description), param) for param in descriptor.outputs]
     param_lines = _parameter_lines(descriptor, params, node_ids)
 
     lines = ["flowchart LR"]
@@ -32,7 +43,7 @@ def to_mermaid(descriptor: Descriptor, params: str = "all") -> str:
     if param_lines:
         lines.append("  parameters -.-> tool")
     lines.extend(f"  tool --> {node_id}" for node_id, _ in outputs)
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines) + "\n", node_ids.descriptions
 
 
 def _subgraph(subgraph_id: str, title: str, body: list[str], indent: str = "  ") -> list[str]:
@@ -98,7 +109,7 @@ def _tree_lines(tree, node_ids: "_NodeIds", indent: str = "    ") -> list[str]:
 
 
 def _param_nodes(params, node_ids: "_NodeIds") -> list[tuple[str, str]]:
-    return [(node_ids.make("param", param.id), _param_label(param)) for param in params]
+    return [(node_ids.make("param", param.id, param.description), _param_label(param)) for param in params]
 
 
 def _param_grid(nodes: list[tuple[str, str]], indent: str = "    ") -> list[str]:
@@ -166,8 +177,9 @@ class _NodeIds:
 
     def __init__(self):
         self.used = set()
+        self.descriptions = {}
 
-    def make(self, prefix: str, name: str) -> str:
+    def make(self, prefix: str, name: str, description: str | None = None) -> str:
         base = prefix + "_" + re.sub(r"\W", "_", str(name), flags=re.ASCII)
         node_id = base
         count = 1
@@ -175,4 +187,6 @@ class _NodeIds:
             count += 1
             node_id = f"{base}_{count}"
         self.used.add(node_id)
+        if description:
+            self.descriptions[node_id] = description
         return node_id

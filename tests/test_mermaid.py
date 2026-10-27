@@ -3,7 +3,7 @@ import re
 import pytest
 
 from conftest import FIXTURE_NAMES, load_fixture, load_raw, nodes
-from vis_workflow import to_mermaid
+from vis_workflow import node_descriptions, to_mermaid
 
 
 @pytest.mark.parametrize("name", FIXTURE_NAMES)
@@ -11,7 +11,11 @@ def test_diagram(name, snapshot):
     descriptor = load_fixture(name)
     text = to_mermaid(descriptor)
     snapshot(name.split(".")[0] + ".mmd", text)
-    nodes(text)
+    found = nodes(text)
+    described = [param for param in descriptor.workflow.inputs + descriptor.outputs if param.description]
+    descriptions = node_descriptions(descriptor)
+    assert descriptions.keys() <= found.keys()
+    assert len(descriptions) == len(described) + bool(descriptor.workflow.description)
     assert text.count("subgraph") == text.count("  end")
     for param in descriptor.data_inputs:
         assert f"  in_{param.id} --> tool" in text
