@@ -19,10 +19,6 @@ Portal: https://nl-bioimaging.github.io/vis-workflow/
 
 ## Known issues
 
-### biomero-schema PR #8 not merged yet
-[PR #8](https://github.com/NL-BioImaging/biomero-schema/pull/8) is needed to parse Bilayers descriptors. Until
-released, install from branch `feature/bilayers-adapter`.
-
 ### BIAFLOWS diagrams have no data nodes
 BIAFLOWS descriptors have no outputs, and their data inputs are the Cytomine ones the parser filters out, so only
 the tool and parameters show.
