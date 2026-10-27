@@ -74,8 +74,9 @@ def _parameter_lines(descriptor: Descriptor, mode: str, node_ids: "_NodeIds") ->
         basic = [param for param in params if param.mode != "advanced"]
         nodes = _param_nodes(basic, node_ids)
         if len(basic) < len(params):
-            hidden = len(params) - len(basic)
-            nodes.append((node_ids.make("param", "advanced"), f"+{_plural(hidden, 'advanced parameter')}"))
+            hidden = [param.name or param.id for param in params if param.mode == "advanced"]
+            summary_id = node_ids.make("param", "advanced", "\n".join(hidden))
+            nodes.append((summary_id, f"+{_plural(len(hidden), 'advanced parameter')}"))
         return _param_grid(nodes)
     # Stable sort: Basic before Advanced, descriptor order within each
     ordered = sorted(params, key=lambda param: param.mode == "advanced")
