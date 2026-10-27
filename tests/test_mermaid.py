@@ -23,13 +23,13 @@ def test_diagram(name, snapshot):
         assert f"  tool --> out_{param.id}" in text
 
 
-@pytest.mark.parametrize("mode, shown, summary, rows, hidden_names", [
+@pytest.mark.parametrize("mode, shown, summary, rows, hint", [
     ("all", 41, None, None, None),
-    ("beginner", 19, "+22 advanced parameters", [3] * 6 + [2], 22),
-    ("collapsed", 0, "41 parameters", [], None),
+    ("beginner", 19, "+22 advanced parameters", [3] * 6 + [2], ("param_advanced", 22)),
+    ("collapsed", 0, "41 parameters", [], ("param_summary", 41)),
     ("none", 0, None, [], None),
 ])
-def test_parameter_modes(mode, shown, summary, rows, hidden_names):
+def test_parameter_modes(mode, shown, summary, rows, hint):
     descriptor = load_fixture("cideconvolve_config.yaml")
     text = to_mermaid(descriptor, params=mode)
     found = nodes(text)
@@ -37,8 +37,8 @@ def test_parameter_modes(mode, shown, summary, rows, hidden_names):
     assert summary is None or summary in found.values()
     assert rows is None or [line.count("~~~") + 1 for line in text.splitlines() if "~~~" in line] == rows
     assert ("parameters -.-> tool" in text) == (mode != "none")
-    assert hidden_names is None or len(
-        node_descriptions(descriptor, params=mode)["param_advanced"].splitlines()) == hidden_names
+    # Summary nodes list the names of the parameters they stand for
+    assert hint is None or len(node_descriptions(descriptor, params=mode)[hint[0]].splitlines()) == hint[1]
 
 
 @pytest.mark.parametrize("name, mode, declared, chains", [

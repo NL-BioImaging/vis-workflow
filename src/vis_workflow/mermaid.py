@@ -61,7 +61,8 @@ def _parameter_lines(descriptor: Descriptor, mode: str, node_ids: "_NodeIds") ->
     if mode == "none" or not params:
         return []
     if mode == "collapsed":
-        return [f'    {node_ids.make("param", "summary")}["{_plural(len(params), "parameter")}"]']
+        summary_id = node_ids.make("param", "summary", "\n".join(param.name or param.id for param in params))
+        return [f'    {summary_id}["{_plural(len(params), "parameter")}"]']
     def section(param):
         return descriptor.sections.get(param.id, "other")
 
